@@ -38,3 +38,11 @@ The bad version turns you into the planner and the agent into a typist — you'r
 Every change to your vault is a git commit, which means every change is undoable. If an agent makes an edit you don't want, you can always ask it to revert — `git revert` undoes a commit while keeping the history of what happened, so you can see what was tried and why.
 
 If you're not sure *why* an agent did something, just ask it: "why did you make that change?" or "walk me through your reasoning." A good agent can explain its own decisions in plain language — and if the explanation doesn't hold up, that's your cue to revert and try again with clearer instructions.
+
+## 6. An optional pattern: draft with one AI, process with another
+
+You don't have to capture everything through your coding agent. Once you're comfortable, a second, complementary pattern works well: use a **chat-based AI for drafting**, and your **coding agent for processing**.
+
+Many chat assistants (for example ChatGPT) can connect directly to a GitHub repository. If you host your vault on GitHub and connect it, you can think out loud in the chat, have the assistant turn your rough thought into a clean, well-worded note, and write that note straight into `01 Inbox/` — without leaving the conversation. Later, in a normal session, your coding agent (Claude Code, Codex, or whichever you use) runs the inbox triage and files those drafts into the right place.
+
+This splits the work along each tool's strength: the chat AI is good at turning a half-formed idea into readable prose and is always a tab away; the coding agent is good at structure, git, and moving files around. Capture with one, process with the other — the vault is just Markdown in git, so it doesn't care which AI touched it, and neither pattern locks out the other. This is the "works with any AI" idea in daily practice: different agents for different jobs, one shared vault underneath.
