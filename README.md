@@ -1,7 +1,7 @@
 # AI SecondBrain OS
 
 <p align="center">
-  <img src="assets/social-card.png" alt="AI SecondBrain OS — one second brain, any AI agent" width="820">
+  <img src="assets/demo.gif" alt="Paste one prompt and your AI agent scaffolds the whole vault" width="820">
 </p>
 
 A git-versioned second brain that works with ANY AI coding agent — Claude Code, Codex, Gemini CLI, Cursor, Copilot. Switch agents anytime; they all follow the same rules.
