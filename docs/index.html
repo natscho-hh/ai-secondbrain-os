@@ -264,21 +264,23 @@
       promptSlots[i].textContent = BOOTSTRAP_PROMPT;
     }
 
-    // Wire up each agent's toggle button to show only its own section.
+    // Wire up each agent's toggle button to show only its own section,
+    // hiding any other section that was previously shown (exclusive toggle).
     var toggles = document.querySelectorAll(".agent-toggle");
     toggles.forEach(function (btn) {
       btn.addEventListener("click", function () {
         var agent = btn.getAttribute("data-agent");
         var section = document.getElementById("section-" + agent);
-        var isHidden = section.hasAttribute("hidden");
 
-        if (isHidden) {
-          section.removeAttribute("hidden");
-          btn.setAttribute("aria-pressed", "true");
-        } else {
-          section.setAttribute("hidden", "");
-          btn.setAttribute("aria-pressed", "false");
-        }
+        toggles.forEach(function (otherBtn) {
+          var otherAgent = otherBtn.getAttribute("data-agent");
+          var otherSection = document.getElementById("section-" + otherAgent);
+          otherSection.setAttribute("hidden", "");
+          otherBtn.setAttribute("aria-pressed", "false");
+        });
+
+        section.removeAttribute("hidden");
+        btn.setAttribute("aria-pressed", "true");
       });
     });
 
