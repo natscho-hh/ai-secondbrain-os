@@ -1,0 +1,10 @@
+# Token-Friendly Habits
+
+AI agents charge (in money, rate limits, or both) for the text they read and generate — "tokens." None of this is required to use the vault, but these habits make sessions faster, cheaper, and easier for the agent to stay accurate in.
+
+- **Keep sessions focused on one topic.** A session that jumps between unrelated projects forces the agent to hold all of them in context at once, which costs more tokens and increases the odds it mixes them up.
+- **Start a new session instead of letting one run forever.** A very long-running session accumulates its entire history in context, so cost and confusion both grow with its length — closing it and starting fresh for the next task resets that cost to zero.
+- **Let the agent checkpoint progress into notes.** Writing a summary into a project note or daily note means the *next* session can read a short note instead of replaying a long conversation to catch up.
+- **Prefer plan mode for big asks.** Planning first produces a reviewable outline before any files change, which catches misunderstandings while they're cheap to fix instead of after tokens have already been spent on the wrong approach.
+- **Don't paste huge files into the chat when a path reference works.** Agents can read files themselves — pointing at `path/to/file.md` costs a few words, while pasting the whole file's contents costs everything in it.
+- **Use cheaper models for mechanical work.** Renaming files, formatting notes, or applying a plan you already approved doesn't need your strongest (and most expensive) model — save that model for planning and judgment calls, and switch down for the rest. See `guides/model-strategy.md` for exactly how to do this per agent.
