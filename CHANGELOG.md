@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] — 2026-07-11
+
+### Fixed
+
+- The Codex SessionStart hook example in `guides/per-agent-tips.md` used `systemMessage`, which Codex only shows to the **user** in the UI. The example now emits `hookSpecificOutput.additionalContext`, the field that actually reaches the **model's context** — the equivalent of plain stdout in Claude Code. Verified against a live Codex setup.
+
 ## [0.4.0] — 2026-07-11
 
 Codex parity, field-tested: the source vault wired Codex up as a first-class agent and verified every claim against a live setup — the generalizable pieces now ship in the template.
@@ -76,6 +82,7 @@ First public release. AI SecondBrain OS turns an Obsidian vault into an AI-agnos
 
 - Verified end-to-end with **Claude Code** (full setup, onboarding, and a byte-exact non-destructive migration test). **Codex** correctly reads and reasons over every document; on a locked-down machine its default sandbox blocks first-run writes until you approve file/network access. **Gemini CLI** is currently blocked at Google's own account tier for individual users — unrelated to this project.
 
+[0.4.1]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.4.1
 [0.4.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.4.0
 [0.3.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.3.0
 [0.2.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.2.0

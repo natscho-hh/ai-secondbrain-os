@@ -84,12 +84,13 @@ The rows are the portable/vendor-specific split in one view: the rulebook, skill
   }
   ```
 
-  Two Codex-specific differences: **stdout must be JSON** (plain text is discarded as a failed hook), and **project-local hooks run only after you trust them once** — start `codex` in the vault, run `/hooks`, and approve them. The Stop guard from the Claude Code section works as-is (exit code 2 + stderr is the same blocking convention). For SessionStart, wrap the pull-and-inbox output as a JSON `systemMessage` (`jq` handles the escaping):
+  Two Codex-specific differences: **stdout must be JSON** (plain text is discarded as a failed hook), and **project-local hooks run only after you trust them once** — start `codex` in the vault, run `/hooks`, and approve them. The Stop guard from the Claude Code section works as-is (exit code 2 + stderr is the same blocking convention). For SessionStart, wrap the pull-and-inbox output as `hookSpecificOutput.additionalContext` — that's the field that reaches the **model's context**, exactly like plain stdout does in Claude Code (`systemMessage`, by contrast, is only shown to the user in the UI). `jq` handles the escaping:
 
   ```sh
   #!/bin/sh
   out=$({ git pull --no-edit origin main 2>&1; echo "Inbox:"; ls "01 Inbox"; })
-  printf '{"systemMessage": %s}' "$(printf '%s' "$out" | jq -Rs .)"
+  printf '{"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": %s}}' \
+    "$(printf '%s' "$out" | jq -Rs .)"
   ```
 
 - **Quirk:** it's the one agent here configured in TOML rather than JSON, so a config snippet copied from Claude Code or Gemini CLI needs reformatting, not just a key rename.

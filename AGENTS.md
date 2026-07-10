@@ -1,4 +1,4 @@
-<!-- asbos-template-version: 0.4.0 -->
+<!-- asbos-template-version: 0.4.1 -->
 # AGENTS.md — Vault Rulebook
 
 This file is the single source of truth for how any AI agent works in this vault. `CLAUDE.md` and `GEMINI.md` (and any other agent-specific file) only point here — the rules themselves live in exactly one place.
