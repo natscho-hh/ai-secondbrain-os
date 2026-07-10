@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] — 2026-07-11
+
+Codex parity, field-tested: the source vault wired Codex up as a first-class agent and verified every claim against a live setup — the generalizable pieces now ship in the template.
+
+### Added
+
+- **Native Codex skill discovery via `.agents/skills/`.** Codex scans `.agents/skills/` (vault root and `~/.agents/skills/`), not the vault's `skills/` folder — so setup Phase 4 now mirrors `skills/` into `.agents/skills/`, `AGENTS.md`'s skill reflex documents the mirror, and the maintenance routine refreshes it after skill updates. Claude Code and Codex both discover skills natively now; Gemini CLI and OpenCode still check manually.
+- **Codex session-routine hooks** (per-agent tips): Codex's `hooks.json` uses the same JSON shape as Claude Code's hooks, and the Stop git-sync guard works unchanged (exit 2 + stderr blocks). Two Codex-specific rules are documented with a ready-to-copy example: hook stdout must be **JSON** (a `systemMessage` wrapper for the SessionStart pull-and-inbox script), and project-local hooks need a one-time `/hooks` trust approval.
+- **Agent compatibility matrix** at the top of `guides/per-agent-tips.md` — rulebook entry, skill discovery, hooks, MCP config, plan mode, and model switch for all four agents in one view, making the portable/vendor-specific split explicit.
+
+### Changed
+
+- **SKILL.md frontmatter must start on line 1** — documented in `AGENTS.md`; a heading above the frontmatter makes Codex silently reject the skill (found the hard way in the source vault).
+
 ## [0.3.0] — 2026-07-11
 
 The project has a new name: **AI SecondBrain Stack** (formerly AI SecondBrain OS), and a sharpened agent lineup: Claude Code, Codex CLI, Gemini CLI, and OpenCode.
@@ -62,6 +76,7 @@ First public release. AI SecondBrain OS turns an Obsidian vault into an AI-agnos
 
 - Verified end-to-end with **Claude Code** (full setup, onboarding, and a byte-exact non-destructive migration test). **Codex** correctly reads and reasons over every document; on a locked-down machine its default sandbox blocks first-run writes until you approve file/network access. **Gemini CLI** is currently blocked at Google's own account tier for individual users — unrelated to this project.
 
+[0.4.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.4.0
 [0.3.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.3.0
 [0.2.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.2.0
 [0.1.0]: https://github.com/natscho-hh/ai-secondbrain-stack/releases/tag/v0.1.0

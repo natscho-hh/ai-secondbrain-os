@@ -2,6 +2,19 @@
 
 Practical notes for each of the four agents this vault supports. Facts below were checked against each vendor's own docs; where something changes quickly (exact model names, fast-moving CLI flags), that's flagged so you know to double-check against the agent's own help output instead of trusting this file blindly.
 
+## Compatibility matrix
+
+| | Claude Code | Codex CLI | Gemini CLI | OpenCode |
+|---|---|---|---|---|
+| **Rulebook entry** | `CLAUDE.md` adapter | `AGENTS.md` (native) | `GEMINI.md` adapter | `AGENTS.md` (native) |
+| **Skill discovery** | `skills/` (native) | `.agents/skills/` (native — keep it a mirror of `skills/`) | manual check of `skills/` | manual check of `skills/` |
+| **Session hooks** | `.claude/settings.json` | `hooks.json` (global `~/.codex/` or project `.codex/`) | — | — |
+| **MCP config** | `.mcp.json` / `~/.claude.json` | `~/.codex/config.toml` (`mcp_servers`, TOML) | `~/.gemini/settings.json` (`mcpServers`) | `opencode.json` (`mcp` key) |
+| **Plan mode** | `Shift+Tab` / `/plan` | `/plan` | `Shift+Tab` / `/plan` / `--approval-mode=plan` | `Tab` toggle |
+| **Model switch** | `/model` | `/model` | `-m` flag / `/model` | `/models` |
+
+The rows are the portable/vendor-specific split in one view: the rulebook, skills, guides, and vault content are shared; hook wiring and MCP config files are per-agent and never leave the agent's own config.
+
 ## Claude Code
 
 - **Install:** native installer — `curl -fsSL https://claude.ai/install.sh | bash` — is the current recommended path (auto-updating, no Node dependency). The older `npm install -g @anthropic-ai/claude-code` still works but is being phased out in favor of the native installer. Docs: <https://docs.claude.com/en/docs/claude-code>.
@@ -9,7 +22,7 @@ Practical notes for each of the four agents this vault supports. Facts below wer
 - **Plan mode:** press `Shift+Tab` twice to cycle into it (status bar shows "⏸ plan mode on"); `/plan` is also available from v2.1 onward.
 - **Model switch:** `/model` — e.g. `/model opus`, `/model sonnet`, `/model haiku`; the menu also has a combined "Opus in plan mode, Sonnet otherwise" option.
 - **MCP config:** `.mcp.json` in the vault root (project-scoped, shareable via git) or `~/.claude.json` (user-scoped, managed with `claude mcp add --scope user`).
-- **Quirk:** Claude Code is the only one of these four agents that reads the vault's `skills/` folder natively — every other agent needs to be told to check it manually, per the "Skill reflex" section of `AGENTS.md`.
+- **Quirk:** Claude Code reads the vault's `skills/` folder natively. Codex discovers skills natively too, but only from `.agents/skills/` (the mirror, see the Codex section); Gemini CLI and OpenCode need to be told to check `skills/` manually, per the "Skill reflex" section of `AGENTS.md`.
 - **Session-routine hooks (optional, recommended):** the session routines in `AGENTS.md` are prose — they work only as long as the agent remembers them. Claude Code can enforce the two critical ones mechanically with hooks in `.claude/settings.json` inside your vault:
 
   ```json
@@ -55,6 +68,30 @@ Practical notes for each of the four agents this vault supports. Facts below wer
 - **Plan mode:** the `/plan [goal]` slash command switches the session into plan mode; you can pair it with `--path` (target a specific directory) or `--model` flags.
 - **Model switch:** `/model` — also lets you adjust reasoning level, not just the model itself.
 - **MCP config:** `~/.codex/config.toml`, with servers under `[mcp_servers.<name>]` — note this is TOML, and the key is `mcp_servers` (underscore), not the `mcpServers` (camelCase) used by the other JSON-based agents.
+- **Skill discovery (native):** Codex scans `.agents/skills/` — repo-local (vault root, parent folder, repo root) and global (`~/.agents/skills/`) — and follows symlinks/junctions. It does **not** scan the vault's `skills/` folder, which is why setup mirrors `skills/` into `.agents/skills/`. Two gotchas: the `SKILL.md` frontmatter must start on line 1 (anything above it makes Codex reject the skill), and new skills are only picked up on the next Codex start.
+- **Session-routine hooks (optional, recommended):** Codex has a hook system with the same JSON shape as Claude Code's — put this in `.codex/hooks.json` in your vault:
+
+  ```json
+  {
+    "hooks": {
+      "SessionStart": [
+        { "hooks": [{ "type": "command", "command": "sh .codex/hooks/session-start-codex.sh" }] }
+      ],
+      "Stop": [
+        { "hooks": [{ "type": "command", "command": "sh .claude/hooks/stop-gitsync.sh" }] }
+      ]
+    }
+  }
+  ```
+
+  Two Codex-specific differences: **stdout must be JSON** (plain text is discarded as a failed hook), and **project-local hooks run only after you trust them once** — start `codex` in the vault, run `/hooks`, and approve them. The Stop guard from the Claude Code section works as-is (exit code 2 + stderr is the same blocking convention). For SessionStart, wrap the pull-and-inbox output as a JSON `systemMessage` (`jq` handles the escaping):
+
+  ```sh
+  #!/bin/sh
+  out=$({ git pull --no-edit origin main 2>&1; echo "Inbox:"; ls "01 Inbox"; })
+  printf '{"systemMessage": %s}' "$(printf '%s' "$out" | jq -Rs .)"
+  ```
+
 - **Quirk:** it's the one agent here configured in TOML rather than JSON, so a config snippet copied from Claude Code or Gemini CLI needs reformatting, not just a key rename.
 
 ## Gemini CLI

@@ -1,4 +1,4 @@
-<!-- asbos-template-version: 0.3.0 -->
+<!-- asbos-template-version: 0.4.0 -->
 # AGENTS.md — Vault Rulebook
 
 This file is the single source of truth for how any AI agent works in this vault. `CLAUDE.md` and `GEMINI.md` (and any other agent-specific file) only point here — the rules themselves live in exactly one place.
@@ -54,7 +54,7 @@ Two files live at the vault root alongside these folders: `todos.md`, the centra
 3. Create or update today's daily note. Distill lessons learned into the matching resource note; the daily note only links there.
 4. Offer to clean up the inbox; call out pending notes older than 14 days and ask whether to do, schedule, or drop them.
 
-**Automating the routines:** prose routines rely on the agent remembering them — automation beats memory. Claude Code can enforce both routines with hooks (a SessionStart hook that pulls and reports the inbox, and a Stop hook that refuses to end the session while uncommitted changes exist); see the Claude Code section of `guides/per-agent-tips.md` for the pattern. Other agents run these routines conversationally.
+**Automating the routines:** prose routines rely on the agent remembering them — automation beats memory. Claude Code and Codex can both enforce these routines with hooks (a SessionStart hook that pulls and reports the inbox, and a Stop hook that refuses to end the session while uncommitted changes exist); see their sections in `guides/per-agent-tips.md` for ready-to-copy patterns. Gemini CLI and OpenCode run the routines conversationally.
 
 ## Git sync (mandatory)
 
@@ -70,7 +70,9 @@ Do not batch multiple unrelated changes into a single silent commit at the end o
 
 Before ANY task — not just complex ones — check whether a skill in this vault's `skills/` folder already covers it. Each skill is its own folder with a `SKILL.md` entry point. If a skill matches the task, read its `SKILL.md` and follow it step by step instead of improvising a fresh approach.
 
-Claude Code loads skills from this folder natively. Every other agent (Codex, Gemini CLI, OpenCode) must do this check manually: list `skills/`, scan for a matching `SKILL.md`, and read it before starting work.
+Claude Code loads skills from this folder natively. Codex also discovers skills natively, but from `.agents/skills/` — keep that folder as a mirror of `skills/` (setup creates it; refresh it whenever a skill is added or updated). Gemini CLI and OpenCode do the check manually: list `skills/`, scan for a matching `SKILL.md`, and read it before starting work.
+
+One formatting rule matters for native discovery: a `SKILL.md`'s YAML frontmatter (`name` + `description`) must start on **line 1** — a heading or blank line above it makes Codex reject the whole skill.
 
 ## Model strategy
 
